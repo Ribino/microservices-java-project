@@ -1,0 +1,43 @@
+services:
+  postgres-auth:
+    image: postgres:14
+    container_name: postgres-auth-db
+    restart: always
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./auth-db:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+  
+  postgres-order:
+    image: postgres:14
+    container_name: postgres-order-db
+    restart: always
+    environment:
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: order_password
+      POSTGRES_DB: order_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_order_data:/var/lib/postgresql/data
+   
+volumes:
+  postgres_auth_data:
+    driver: local
+  postgres_order_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+  # Define a bridge network for the containers to communicate
+  # with each other. This is useful for microservices architecture.
+  # You can add more services to this network as needed.
+  # The network is isolated from the host network, providing an extra layer of security.
+  # You can also define other networks for different purposes.  
